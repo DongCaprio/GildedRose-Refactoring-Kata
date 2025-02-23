@@ -1,5 +1,6 @@
 package com.gildedrose;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.DisplayName;
@@ -13,8 +14,10 @@ class GildedRoseTest {
         Item[] items = new Item[]{new Item("normal", 10, 5)};
         GildedRose app = new GildedRose(items);
         app.updateQuality();
-        assertEquals(4, items[0].quality); // 품질이 정확히 1만큼 감소했는지 확인
-        assertEquals(9, items[0].sellIn); // 품질이 정확히 1만큼 감소했는지 확인
+        assertAll(
+            () -> assertEquals(4, items[0].quality),
+            () -> assertEquals(9, items[0].sellIn)
+        );
     }
 
     @Test
@@ -23,7 +26,7 @@ class GildedRoseTest {
         Item[] items = new Item[]{new Item("normal", 0, 0)};
         GildedRose app = new GildedRose(items);
         app.updateQuality();
-        assertEquals(items[0].sellIn, -1);
+        assertEquals(-1, items[0].sellIn);
     }
 
     @Test
@@ -31,12 +34,11 @@ class GildedRoseTest {
     void 진짜_2배로_떨어질까() {
         Item[] items = new Item[]{new Item("normal", 1, 5)};
         GildedRose app = new GildedRose(items);
-        app.updateQuality();
-        assertEquals(items[0].quality, 4);
-        app.updateQuality();
-        assertEquals(items[0].quality, 2);
-        app.updateQuality();
-        assertEquals(items[0].quality, 0);
+        assertAll(
+            () -> assertEquals(4, updateAndGetQuality(app, items)),
+            () -> assertEquals(2, updateAndGetQuality(app, items)),
+            () -> assertEquals(0, updateAndGetQuality(app, items))
+        );
     }
 
     @Test
@@ -101,45 +103,39 @@ class GildedRoseTest {
     void 백스테이지_값이_상승하다가_콘서트_종료하면_0이_된다() {
         Item[] items = new Item[]{new Item("Backstage passes to a TAFKAL80ETC concert", 12, 12)};
         GildedRose app = new GildedRose(items);
-        app.updateQuality();
-        assertEquals(13, items[0].quality);
-        app.updateQuality();
-        assertEquals(14, items[0].quality);
-        app.updateQuality();
-        assertEquals(16, items[0].quality);
-        app.updateQuality();
-        assertEquals(18, items[0].quality);
-        app.updateQuality();
-        assertEquals(20, items[0].quality);
-        app.updateQuality();
-        assertEquals(22, items[0].quality);
-        app.updateQuality();
-        assertEquals(24, items[0].quality);
-        app.updateQuality();
-        assertEquals(27, items[0].quality);
-        app.updateQuality();
-        assertEquals(30, items[0].quality);
-        app.updateQuality();
-        assertEquals(33, items[0].quality);
-        app.updateQuality();
-        assertEquals(36, items[0].quality);
-        app.updateQuality();
-        assertEquals(39, items[0].quality);
-        app.updateQuality();
-        assertEquals(0, items[0].quality);
-        app.updateQuality();
-        assertEquals(0, items[0].quality);
-        app.updateQuality();
+        assertAll(
+            () -> assertEquals(13, updateAndGetQuality(app, items), "첫 번째 업데이트"),
+            () -> assertEquals(14, updateAndGetQuality(app, items), "두 번째 업데이트"),
+            () -> assertEquals(16, updateAndGetQuality(app, items), "세 번째 업데이트"),
+            () -> assertEquals(18, updateAndGetQuality(app, items), "네 번째 업데이트"),
+            () -> assertEquals(20, updateAndGetQuality(app, items), "다섯 번째 업데이트"),
+            () -> assertEquals(22, updateAndGetQuality(app, items), "여섯 번째 업데이트"),
+            () -> assertEquals(24, updateAndGetQuality(app, items), "일곱 번째 업데이트"),
+            () -> assertEquals(27, updateAndGetQuality(app, items), "여덟 번째 업데이트"),
+            () -> assertEquals(30, updateAndGetQuality(app, items), "아홉 번째 업데이트"),
+            () -> assertEquals(33, updateAndGetQuality(app, items), "열 번째 업데이트"),
+            () -> assertEquals(36, updateAndGetQuality(app, items), "열한 번째 업데이트"),
+            () -> assertEquals(39, updateAndGetQuality(app, items), "열두 번째 업데이트"),
+            () -> assertEquals(0, updateAndGetQuality(app, items), "콘서트 종료 후"),
+            () -> assertEquals(0, updateAndGetQuality(app, items), "콘서트 종료 후 유지")
+        );
     }
 
-    /*@Test
+    private int updateAndGetQuality(GildedRose app, Item[] items) {
+        app.updateQuality();
+        return items[0].quality;
+    }
+
+    /* 설명에는 쓰여있는데 실제 코드에는 구현 안되어있음 제외!
+    @Test
     @DisplayName("Conjured 아이템은 일반 아이템의 2배의 속도로 품질(Quality)이 저하됩니다.")
     void Conjured_아이템은_일반_아이템의_2배의_속도로_품질_Quality_이_저하됩니다() {
         Item[] items = new Item[]{new Item("Conjured Mana Cake", 10, 10)};
         GildedRose app = new GildedRose(items);
         app.updateQuality();
         assertEquals(8, items[0].quality);
-    }*/
+    }
+    */
 
 
 }
