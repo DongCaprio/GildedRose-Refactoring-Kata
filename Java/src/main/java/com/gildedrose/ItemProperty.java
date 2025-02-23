@@ -12,10 +12,10 @@ public enum ItemProperty {
     AGED_BRIE("Aged Brie", new UpdateAgedBrie()),
     BACK_STAGE("Backstage passes to a TAFKAL80ETC concert", new UpdateBackStage()),
     SULFURAS("Sulfuras, Hand of Ragnaros", new UpdateSulfuras()),
-    NORMAL("", new UpdateNormal());
+    NORMAL("NORMAL_ITEM", new UpdateNormal());
 
-    private String itemName;
-    private UpdateItem updateItem;
+    private final String itemName;
+    private final UpdateItem updateItem;
 
     ItemProperty(String itemName, UpdateItem updateItem) {
         this.itemName = itemName;
@@ -23,12 +23,10 @@ public enum ItemProperty {
     }
 
     public static UpdateItem findUpdateItem(String itemName) {
-        return Arrays.stream(ItemProperty.values())
+        return Arrays.stream(values())
             .filter(item -> item.itemName.equals(itemName))
             .findFirst()
             .map(item -> item.updateItem)
             .orElse(NORMAL.updateItem);
     }
-
-
 }
