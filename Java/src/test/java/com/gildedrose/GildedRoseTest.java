@@ -67,6 +67,24 @@ class GildedRoseTest {
     }
 
     @Test
+    @DisplayName("BACK_STAGE가 판매일이 0보다 작아지면 quality가 0이 된다?")
+    void BACK_STAGE가_판매일이_0보다_작아지면_quality가_0이_된다() {
+        Item[] items = new Item[]{new Item("Backstage passes to a TAFKAL80ETC concert", 0, 10)};
+        GildedRose app = new GildedRose(items);
+        app.updateQuality();
+        assertEquals(0, items[0].quality);
+    }
+
+    @Test
+    @DisplayName("AgedBrie 판매일이 0보다 작아지면 quality가 2가 오른다?")
+    void AgedBrie_판매일이_0보다_작아지면_quality가_2가_오른다() {
+        Item[] items = new Item[]{new Item("Aged Brie", -1, 0)};
+        GildedRose app = new GildedRose(items);
+        app.updateQuality();
+        assertEquals(2, items[0].quality);
+    }
+
+    @Test
     @DisplayName("Sulfuras의 Quality 값은 떨어지지 않습니다.")
     void Sulfuras의_Quality_값은_떨어지지_않습니다() {
         Item[] items = new Item[]{new Item("Sulfuras, Hand of Ragnaros", 10, 10)};
