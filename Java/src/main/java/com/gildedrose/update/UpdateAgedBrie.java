@@ -2,24 +2,20 @@ package com.gildedrose.update;
 
 import com.gildedrose.Item;
 
-public class UpdateAgedBrie implements UpdateItem {
+public class UpdateAgedBrie extends AbstractUpdateItem {
 
     @Override
-    public Item updateItem(Item item) {
+    public void updateItem(Item item) {
+        minusSellIn(item);
 
-        if (item.quality < 50) {
+        if (isQualityLessThan(50, item)) {
             item.quality += 1;
         }
 
-        item.sellIn -= 1;
-
-        if (item.sellIn < 0) {
-            if (item.quality < 50) {
-                item.quality += 1;
-            }
+        if (isSellInLessThan(0, item) && isQualityLessThan(50, item)) {
+            item.quality += 1;
         }
 
-        return item;
     }
 
 }

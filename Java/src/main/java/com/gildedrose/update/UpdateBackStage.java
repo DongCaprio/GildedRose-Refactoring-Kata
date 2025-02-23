@@ -2,32 +2,26 @@ package com.gildedrose.update;
 
 import com.gildedrose.Item;
 
-public class UpdateBackStage implements UpdateItem {
+public class UpdateBackStage extends AbstractUpdateItem {
 
     @Override
-    public Item updateItem(Item item) {
-        if (item.quality < 50) {
+    public void updateItem(Item item) {
+        if (isQualityLessThan(50, item)) {
             item.quality += 1;
         }
 
-        if (item.sellIn < 11) {
-            if (item.quality < 50) {
-                item.quality += 1;
-            }
+        if (isSellInLessThan(11, item) && isQualityLessThan(50, item)) {
+            item.quality += 1;
         }
 
-        if (item.sellIn < 6) {
-            if (item.quality < 50) {
-                item.quality += 1;
-            }
+        if (isSellInLessThan(6, item) && isQualityLessThan(50, item)) {
+            item.quality += 1;
         }
 
-        item.sellIn -= 1;
+        minusSellIn(item);
 
-        if (item.sellIn < 0) {
+        if (isSellInLessThan(0, item)) {
             item.quality = 0;
         }
-
-        return item;
     }
 }

@@ -2,10 +2,9 @@ package com.gildedrose.update;
 
 import com.gildedrose.Item;
 
-public class UpdateSulfuras implements UpdateItem {
+public class UpdateSulfuras extends AbstractUpdateItem {
 
     @Override
-    public Item updateItem(Item item) {
-        return item;
+    public void updateItem(Item item) {
     }
 }
