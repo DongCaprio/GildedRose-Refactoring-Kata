@@ -15,7 +15,5 @@ public class UpdateAgedBrie extends AbstractUpdateItem {
         if (isSellInLessThan(0, item) && isQualityLessThan(50, item)) {
             item.quality += 1;
         }
-
     }
-
 }

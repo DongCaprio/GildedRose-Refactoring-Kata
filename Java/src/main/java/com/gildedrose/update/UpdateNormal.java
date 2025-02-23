@@ -16,6 +16,5 @@ public class UpdateNormal extends AbstractUpdateItem {
         if (isSellInLessThan(0, item) && isQualityMoreThan(0, item)) {
             item.quality -= 1;
         }
-
     }
 }
