@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 class GildedRoseTest {
@@ -21,8 +22,8 @@ class GildedRoseTest {
     }
 
     @Test
-    @DisplayName("일반 상품의 날짜가 0보다 작아질 수 있는지 확인")
-    void 날짜가_마이너스가_될까() {
+    @DisplayName("일반 상품의 날짜가 마이너스가 될 수 있다")
+    void 날짜가_0보다_작아진다() {
         Item[] items = new Item[]{new Item("normal", 0, 0)};
         GildedRose app = new GildedRose(items);
         app.updateQuality();
@@ -30,8 +31,8 @@ class GildedRoseTest {
     }
 
     @Test
-    @DisplayName("판매하는 나머지 일수가 없어지면, Quality 값은 2배로 떨어지는지 확인")
-    void 진짜_2배로_떨어질까() {
+    @DisplayName("판매하는 나머지 일수가 없어지면, Quality 값은 2배로 떨어짐")
+    void 판매하는_나머지_일수가_없어지면_Quality_값은_2배로_떨어짐() {
         Item[] items = new Item[]{new Item("normal", 1, 5)};
         GildedRose app = new GildedRose(items);
         assertAll(
@@ -42,7 +43,7 @@ class GildedRoseTest {
     }
 
     @Test
-    @DisplayName("일반 상품 품질이 0보다 낮아지지 않는지 확인")
+    @DisplayName("일반 상품 품질이 0보다 낮아지지 않는다")
     void qualityShouldNotGoBelowZero() {
         Item[] items = new Item[]{new Item("normal", 10, 0)};
         GildedRose app = new GildedRose(items);
@@ -51,7 +52,7 @@ class GildedRoseTest {
     }
 
     @Test
-    @DisplayName("\"Aged Brie\"(오래된 브리치즈)은(는) 시간이 지날수록 Quality 값이 올라가는지 확인")
+    @DisplayName("\"Aged Brie\"(오래된 브리치즈)은(는) 시간이 지날수록 Quality 값이 올라간다")
     void 오래된_브리치즈는_시간이_지나면_Quility가_올라감() {
         Item[] items = new Item[]{new Item("Aged Brie", 10, 0)};
         GildedRose app = new GildedRose(items);
@@ -69,16 +70,7 @@ class GildedRoseTest {
     }
 
     @Test
-    @DisplayName("BACK_STAGE가 판매일이 0보다 작아지면 quality가 0이 된다?")
-    void BACK_STAGE가_판매일이_0보다_작아지면_quality가_0이_된다() {
-        Item[] items = new Item[]{new Item("Backstage passes to a TAFKAL80ETC concert", 0, 10)};
-        GildedRose app = new GildedRose(items);
-        app.updateQuality();
-        assertEquals(0, items[0].quality);
-    }
-
-    @Test
-    @DisplayName("AgedBrie 판매일이 0보다 작아지면 quality가 2가 오른다?")
+    @DisplayName("AgedBrie 판매일이 0보다 작아지면 quality가 2가 오른다")
     void AgedBrie_판매일이_0보다_작아지면_quality가_2가_오른다() {
         Item[] items = new Item[]{new Item("Aged Brie", -1, 0)};
         GildedRose app = new GildedRose(items);
@@ -95,30 +87,59 @@ class GildedRoseTest {
         assertEquals(10, items[0].quality);
     }
 
-    @Test
-    @DisplayName("Backstage passes(백스테이지 입장권)는 SellIn 값에 가까워 질수록 "
-        + "Quality 값이 상승하고, "
-        + "10일 부터는 매일 2 씩 증가하다, 5일 부터는이 되면 매일 3 씩 증가하지만, "
-        + "콘서트 종료 후에는 0으로 떨어집니다.")
-    void 백스테이지_값이_상승하다가_콘서트_종료하면_0이_된다() {
-        Item[] items = new Item[]{new Item("Backstage passes to a TAFKAL80ETC concert", 12, 12)};
-        GildedRose app = new GildedRose(items);
-        assertAll(
-            () -> assertEquals(13, updateAndGetQuality(app, items), "첫 번째 업데이트"),
-            () -> assertEquals(14, updateAndGetQuality(app, items), "두 번째 업데이트"),
-            () -> assertEquals(16, updateAndGetQuality(app, items), "세 번째 업데이트"),
-            () -> assertEquals(18, updateAndGetQuality(app, items), "네 번째 업데이트"),
-            () -> assertEquals(20, updateAndGetQuality(app, items), "다섯 번째 업데이트"),
-            () -> assertEquals(22, updateAndGetQuality(app, items), "여섯 번째 업데이트"),
-            () -> assertEquals(24, updateAndGetQuality(app, items), "일곱 번째 업데이트"),
-            () -> assertEquals(27, updateAndGetQuality(app, items), "여덟 번째 업데이트"),
-            () -> assertEquals(30, updateAndGetQuality(app, items), "아홉 번째 업데이트"),
-            () -> assertEquals(33, updateAndGetQuality(app, items), "열 번째 업데이트"),
-            () -> assertEquals(36, updateAndGetQuality(app, items), "열한 번째 업데이트"),
-            () -> assertEquals(39, updateAndGetQuality(app, items), "열두 번째 업데이트"),
-            () -> assertEquals(0, updateAndGetQuality(app, items), "콘서트 종료 후"),
-            () -> assertEquals(0, updateAndGetQuality(app, items), "콘서트 종료 후 유지")
-        );
+    @Nested
+    @DisplayName("백스테이지 테스트")
+    class backStageTest {
+
+        private Item[] items;
+        private GildedRose app;
+
+        @Test
+        @DisplayName("SellIn 가까워질수록 Quality 값 상승")
+        void Qulity_1_상승() {
+            items = new Item[]{new Item("Backstage passes to a TAFKAL80ETC concert", 12, 12)};
+            app = new GildedRose(items);
+            assertEquals(13, updateAndGetQuality(app, items));
+            assertEquals(14, updateAndGetQuality(app, items));
+        }
+
+        @Test
+        @DisplayName("D-10일 부터는 Quality 값 2 증가")
+        void Qulity_2_상승() {
+            items = new Item[]{new Item("Backstage passes to a TAFKAL80ETC concert", 10, 14)};
+            app = new GildedRose(items);
+            assertAll(
+                () -> assertEquals(16, updateAndGetQuality(app, items)),
+                () -> assertEquals(18, updateAndGetQuality(app, items)),
+                () -> assertEquals(20, updateAndGetQuality(app, items)),
+                () -> assertEquals(22, updateAndGetQuality(app, items)),
+                () -> assertEquals(24, updateAndGetQuality(app, items))
+            );
+        }
+
+        @Test
+        @DisplayName("D-5일 부터는 Quality 값 3 증가")
+        void Qulity_3_상승() {
+            items = new Item[]{new Item("Backstage passes to a TAFKAL80ETC concert", 5, 24)};
+            app = new GildedRose(items);
+            assertAll(
+                () -> assertEquals(27, updateAndGetQuality(app, items)),
+                () -> assertEquals(30, updateAndGetQuality(app, items)),
+                () -> assertEquals(33, updateAndGetQuality(app, items)),
+                () -> assertEquals(36, updateAndGetQuality(app, items)),
+                () -> assertEquals(39, updateAndGetQuality(app, items))
+            );
+        }
+
+        @Test
+        @DisplayName("콘서트 종료 후에는 Quality 값 0이 된다 ( 그 후에도 0 유지)")
+        void 콘서트_끝나면_Quality_0으로_변경() {
+            items = new Item[]{new Item("Backstage passes to a TAFKAL80ETC concert", 0, 42)};
+            app = new GildedRose(items);
+            assertAll(
+                () -> assertEquals(0, updateAndGetQuality(app, items), "콘서트 종료 후"),
+                () -> assertEquals(0, updateAndGetQuality(app, items), "콘서트 종료 후 유지"));
+        }
     }
 
     private int updateAndGetQuality(GildedRose app, Item[] items) {
