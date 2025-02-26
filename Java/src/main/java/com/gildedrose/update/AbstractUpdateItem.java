@@ -3,9 +3,9 @@ package com.gildedrose.update;
 import com.gildedrose.Item;
 
 public abstract class AbstractUpdateItem implements UpdateItem {
-    
+
     public void minusSellIn(Item item) {
-        item.sellIn -= 1;
+        item.sellIn -= DEFAULT_DECREMENT;
     }
 
     public boolean isQualityLessThan(int quality, Item item) {
