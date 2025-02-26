@@ -5,7 +5,8 @@ import com.gildedrose.update.UpdateBackStage;
 import com.gildedrose.update.UpdateItem;
 import com.gildedrose.update.UpdateNormal;
 import com.gildedrose.update.UpdateSulfuras;
-import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public enum ItemProperty {
 
@@ -16,17 +17,21 @@ public enum ItemProperty {
 
     private final String itemName;
     private final UpdateItem updateItem;
+    private static final Map<String, UpdateItem> itemStrategies;
 
     ItemProperty(String itemName, UpdateItem updateItem) {
         this.itemName = itemName;
         this.updateItem = updateItem;
     }
 
+    static {
+        itemStrategies = new HashMap<>();
+        for (ItemProperty itemProperty : values()) {
+            itemStrategies.put(itemProperty.itemName, itemProperty.updateItem);
+        }
+    }
+
     public static UpdateItem findUpdateItem(String itemName) {
-        return Arrays.stream(values())
-            .filter(item -> item.itemName.equals(itemName))
-            .findFirst()
-            .map(item -> item.updateItem)
-            .orElse(NORMAL.updateItem);
+        return itemStrategies.getOrDefault(itemName, NORMAL.updateItem);
     }
 }
